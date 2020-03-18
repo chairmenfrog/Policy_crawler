@@ -9,5 +9,5 @@ corpus = [dictionary.doc2bow(words) for words in words_ls]
 
 lda = models.ldamodel.LdaModel(corpus=corpus, id2word=dictionary, num_topics=10)
 
-for topic in lda.print_topics(num_topics=4)
+for topic in lda.print_topics(num_topics=4):
     print(topic)
