@@ -13,7 +13,7 @@ class CrawlDataPipeline(object):
         return item
 
 class PolicyMongoPipeline(object):
-    collection = 'sample_task'
+    collection = 'demo'
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
@@ -35,7 +35,7 @@ class PolicyMongoPipeline(object):
 
     def process_item(self, item, spider):
         table = self.db[self.collection]
-        if 'date' in item.keys():
+        if item['crawl state'] == 'half':
             table.insert(item)
         else:
             table.update_one({'UID':item['UID']},{'$set':item},upsert=True)

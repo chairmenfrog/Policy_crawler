@@ -1,47 +1,56 @@
 import scrapy
+import pickle
 
 class DemoSpider(scrapy.Spider):
     name = "Demo"
     def start_requests(self):
-        total_page = 20
-        url_base = 'http://www.jiangxi.gov.cn/col/col4927/index.html'
+        total_page = 5
+        url_base = 'http://www.jiangxi.gov.cn/module/xxgk/subjectinfo.jsp?sortfield=compaltedate:0&fbtime=&texttype=0&vc_all=&vc_filenumber=&vc_title=&vc_number=&currpage={0}&binlay=&c_issuetime='
         for i in range(total_page):
-            ref = '.html' if i == 0 else '_%s.html' % i 
-            yield scrapy.Request(url=url_base + ref, callback=self.parse)
+            yield scrapy.Request(url=url_base.format(str(i+1)), callback=self.parse)
 
     def parse(self,response):
         detail_page_links = []
-        for piece in response.css('div.listBox ul.list li'):
-            href = piece.css('a::attr(href)').get()
+        for piece in response.css('tr.tr_main_value_odd'):
+            href = piece.css('td a::attr(href)').get()
+            UID = href.split('/')[-1]
+            UID = UID.split('?')[0][:-5]
             detail_page_links.append(href)
-            UID = href.split('/')[-1][:-5]
-            #response.follow(href, callbak = self.parse_content)
             yield {
                 'UID': UID,
-                'tittle': piece.css('a::text').get(),
-                'date': piece.css('span::text').get(),
+                'docID': piece.css('td a::attr(syh)').get(),
+                'tittle': piece.css('td a::attr(mc)').get(),
+                'date': piece.css('td a::attr(rq)').get(),
                 'href': href,
+                'crawl state':'half'
             }
         yield from response.follow_all(detail_page_links, callback = self.parse_content)
 
     def parse_content(self, response):
-        UID = response.url.split('/')[-1][:-5]
+        UID = response.url.split('/')[-1]
+        UID = UID.split('?')[0][:-5]
+        with open('../../data/HTML_pk/%s.pkl' % UID, 'wb') as f:
+            pickle.dump(response.text,f)
+        values = response.css('div.bt-article-y')[0].css('tr td::text').getall()
+        keys = response.css('div.bt-article-y')[0].css('tr td b span::text').getall() +\
+           response.css('div.bt-article-y')[0].css('tr td b::text').getall()
         doc_info_dict = {}
-        container = response.css('div.container')[0]
-        for doc_info in container.css('ol li'):
-            doc_info_l = doc_info.css('::text').getall()
-            if len(doc_info_l) == 2:
-                key,value = doc_info_l
-            elif len(doc_info_l) == 1:
-                key = doc_info_l[0]
-                value = ''
-            doc_info_dict[key] = value
-        full_tittle = container.css('div.header p::text').get()
-        paragraph_list = container.css('div.mainTextBox p::text').getall()
+        if len(keys) == len(values):
+            for i in range(len(keys)):
+                doc_info_dict[keys[i]] = values[i]
+        
+        full_tittle = ''.join(response.css('div.bt-article-y p.sp_title::text').getall())
+        paragraph_list = response.css('div.bt-article-y div#zoom p::text').getall()
+        with open('../../data/JX_text/%s.txt' % UID, 'w') as f:
+            f.write('\n'.join(paragraph_list))
+        attachment_link = response.css('div.bt-article-y div#zoom p a::attr(href)').getall()
+        attachment_link = [link for link in attachment_link if link[:16]=='/module/download']
         return {
             'UID': UID,
             'full_tittle': full_tittle,
             'doc_info_dict': doc_info_dict,
             'mainText': paragraph_list,
+            'attachment_link': attachment_link,
+            'crawl state':'full',
         }
 
