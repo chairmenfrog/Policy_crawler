@@ -24,7 +24,7 @@ class JiangxiSpider(scrapy.Spider):
             yield {
                 'UID': UID,
                 'docID': piece.css('td a::attr(syh)').get(),
-                'tittle': piece.css('td a::attr(mc)').get(),
+                'title': piece.css('td a::attr(mc)').get(),
                 'date': piece.css('td a::attr(rq)').get(),
                 'href': href,
                 'crawl state':'half'
