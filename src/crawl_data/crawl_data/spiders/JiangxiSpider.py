@@ -1,10 +1,15 @@
 import scrapy
 import pickle
+import os
 
-class DemoSpider(scrapy.Spider):
-    name = "Demo"
+class JiangxiSpider(scrapy.Spider):
+    name = "Jiangxi"
+    if not os.path.exists('../../data/HTML_pk/%s' % name):
+        os.makedirs('../../data/HTML_pk/%s' % name)
+    if not os.path.exists('../../data/text/%s' % name):
+        os.makedirs('../../data/text/%s' % name)
     def start_requests(self):
-        total_page = 5
+        total_page = 3
         url_base = 'http://www.jiangxi.gov.cn/module/xxgk/subjectinfo.jsp?sortfield=compaltedate:0&fbtime=&texttype=0&vc_all=&vc_filenumber=&vc_title=&vc_number=&currpage={0}&binlay=&c_issuetime='
         for i in range(total_page):
             yield scrapy.Request(url=url_base.format(str(i+1)), callback=self.parse)
@@ -29,7 +34,7 @@ class DemoSpider(scrapy.Spider):
     def parse_content(self, response):
         UID = response.url.split('/')[-1]
         UID = UID.split('?')[0][:-5]
-        with open('../../data/HTML_pk/%s.pkl' % UID, 'wb') as f:
+        with open('../../data/HTML_pk/%s/%s.pkl' % (self.name,UID), 'wb') as f:
             pickle.dump(response.text,f)
         values = response.css('div.bt-article-y')[0].css('tr td::text').getall()
         keys = response.css('div.bt-article-y')[0].css('tr td b span::text').getall() +\
@@ -41,7 +46,7 @@ class DemoSpider(scrapy.Spider):
         
         full_tittle = ''.join(response.css('div.bt-article-y p.sp_title::text').getall())
         paragraph_list = response.css('div.bt-article-y div#zoom p::text').getall()
-        with open('../../data/JX_text/%s.txt' % UID, 'w') as f:
+        with open('../../data/text/%s/%s.txt' % (self.name,UID), 'w') as f:
             f.write('\n'.join(paragraph_list))
         attachment_link = response.css('div.bt-article-y div#zoom p a::attr(href)').getall()
         attachment_link = [link for link in attachment_link if link[:16]=='/module/download']
