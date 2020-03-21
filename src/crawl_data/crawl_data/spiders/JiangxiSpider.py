@@ -9,7 +9,7 @@ class JiangxiSpider(scrapy.Spider):
     if not os.path.exists('../../data/text/%s' % name):
         os.makedirs('../../data/text/%s' % name)
     def start_requests(self):
-        total_page = 3
+        total_page = 106
         url_base = 'http://www.jiangxi.gov.cn/module/xxgk/subjectinfo.jsp?sortfield=compaltedate:0&fbtime=&texttype=0&vc_all=&vc_filenumber=&vc_title=&vc_number=&currpage={0}&binlay=&c_issuetime='
         for i in range(total_page):
             yield scrapy.Request(url=url_base.format(str(i+1)), callback=self.parse)
@@ -53,6 +53,7 @@ class JiangxiSpider(scrapy.Spider):
         return {
             'UID': UID,
             'full_tittle': full_tittle,
+            'url':response.url,
             'doc_info_dict': doc_info_dict,
             'mainText': paragraph_list,
             'attachment_link': attachment_link,

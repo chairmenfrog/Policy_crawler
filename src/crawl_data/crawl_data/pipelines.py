@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import pymongo
-
+import pandas as pd
+import os
 # Define your item pipelines here
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
@@ -31,6 +32,15 @@ class PolicyMongoPipeline(object):
         self.db[self.mongo_col].drop()
 
     def close_spider(self, spider):
+        if not os.path.exists('../../data/excel/%s' % spider.name):
+            os.makedirs('../../data/excel/%s' % spider.name)
+        table = self.db[self.mongo_col]
+        data_list = []
+        for raw_dict in table.find():
+            data_list.append({key:value for key,value in  raw_dict.items() if key in ['UID','title','date','url']})
+        df = pd.DataFrame(data_list)
+        print(df)
+        df.to_excel('../../data/excel/%s/news_list.xls' % spider.name)
         self.client.close()
 
     def process_item(self, item, spider):

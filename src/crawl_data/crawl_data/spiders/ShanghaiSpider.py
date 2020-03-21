@@ -43,6 +43,7 @@ class ShanghaiSpider(scrapy.Spider):
         return {
             'UID': UID,
             'doc_info_dict': doc_info_dict,
+            'url':response.url,
             'mainText': paragraph_list,
             'crawl state':'full',
         }

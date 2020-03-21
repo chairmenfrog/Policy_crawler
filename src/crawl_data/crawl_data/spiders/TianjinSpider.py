@@ -9,7 +9,7 @@ class TianjinSpider(scrapy.Spider):
     if not os.path.exists('../../data/text/%s' % name):
         os.makedirs('../../data/text/%s' % name)
     def start_requests(self):
-        total_page = 3
+        total_page = 7516
         url_base = 'http://gk.tj.gov.cn/govsearch/search.jsp?SType=1&page={0}'
         for i in range(total_page):
             yield scrapy.Request(url=url_base.format(str(i+1)), callback=self.parse)
@@ -23,7 +23,7 @@ class TianjinSpider(scrapy.Spider):
             yield {
                 'UID': UID,
                 'title': piece.css('a::attr(title)').get(),
-                'date1': piece.css('span.date1::text').get(),
+                'date': piece.css('span.date1::text').get(),
                 'date2': piece.css('span.date2::text').get(),
                 'date3': piece.css('span.date3::text').get(),
                 'href': href,
@@ -49,6 +49,7 @@ class TianjinSpider(scrapy.Spider):
             'UID': UID,
             'doc_info_dict': doc_info_dict,
             'mainText': paragraph_list,
+            'url':response.url,
             'crawl state':'full',
         }
 
