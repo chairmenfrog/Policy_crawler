@@ -9,11 +9,15 @@ class ShanghaiSpider(scrapy.Spider):
     if not os.path.exists('../../data/text/%s' % name):
         os.makedirs('../../data/text/%s' % name)
     def start_requests(self):
+        headers = {
+            'User-Agent': "Mozilla/5.0 (Windows NT 10.0; …) Gecko/20100101 Firefox/60.0",
+            'Referer': "http://service.shanghai.gov.cn/pagemore/iframePagerIndex_12344_2_22.html?objtype=&nodeid=&pagesize=&page=13"
+        }
         total_page = 1305
-        url_base = 'http://www.shanghai.gov.cn/nw2/nw2314/nw2319/nw12344/index{0}.html'
+        #url_base = 'http://www.shanghai.gov.cn/nw2/nw2314/nw2319/nw12344/index{0}.html'
+        url_base = 'http://service.shanghai.gov.cn/pagemore/iframePagerIndex_12344_2_22.html?objtype=&nodeid=&pagesize=&page={0}'
         for i in range(total_page):
-            page = str(i) if i > 0 else ''
-            yield scrapy.Request(url=url_base.format(page), callback=self.parse)
+            yield scrapy.Request(url=url_base.format(str(i+1)),headers=headers, callback=self.parse)
 
     def parse(self,response):
         detail_page_links = []

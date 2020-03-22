@@ -37,7 +37,8 @@ class PolicyMongoPipeline(object):
         table = self.db[self.mongo_col]
         data_list = []
         for raw_dict in table.find():
-            data_list.append({key:value for key,value in  raw_dict.items() if key in ['UID','title','date','url']})
+            #data_list.append({key:value for key,value in  raw_dict.items() if key in ['UID','title','date','url']})
+            data_list.append({key:raw_dict[key] for key in ['UID','title','date','url']})
         df = pd.DataFrame(data_list)
         print(df)
         df.to_excel('../../data/excel/%s/news_list.xls' % spider.name)
