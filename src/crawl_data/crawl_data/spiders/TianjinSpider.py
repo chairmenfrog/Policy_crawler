@@ -10,6 +10,7 @@ class TianjinSpider(scrapy.Spider):
         os.makedirs('../../data/text/%s' % name)
     def start_requests(self):
         total_page = 7516
+        #total_page = 3
         url_base = 'http://gk.tj.gov.cn/govsearch/search.jsp?SType=1&page={0}'
         for i in range(total_page):
             yield scrapy.Request(url=url_base.format(str(i+1)), callback=self.parse)
@@ -37,11 +38,17 @@ class TianjinSpider(scrapy.Spider):
             pickle.dump(response.text,f)
         doc_info_dict = {}
         for line in response.css('table.table_key tr'):
-            line_text_list = line.css('td *::text').getall()
-            for i in range(len(line_text_list)//2):
-                key = line_text_list[2*i]
-                value = line_text_list[2*i+1]
-                doc_info_dict[key] = value
+            count = 0
+            for td in line.css('td'):
+                if count % 2 == 0:
+                    key = td.css('*::text').get()
+                else:
+                    value = td.css('*::text').get()
+                    doc_info_dict[key] = value
+                count += 1
+        FileNumber = ''
+        if "文　　号：" in doc_info_dict.keys():
+            FileNumber = doc_info_dict["文　　号："]
         paragraph_list = response.css('div.TRS_PreAppend p *::text').getall()
         with open('../../data/text/%s/%s.txt' % (self.name,UID), 'w') as f:
             f.write('\n'.join(paragraph_list))
@@ -51,5 +58,6 @@ class TianjinSpider(scrapy.Spider):
             'mainText': paragraph_list,
             'url':response.url,
             'crawl state':'full',
+            'FileNumber' :FileNumber,
         }
 

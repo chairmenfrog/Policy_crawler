@@ -1,6 +1,14 @@
 # Policy_crawler
 爬取34个省份的公文数据。
 
+**add splash**
+
+pip install scrapy-splash
+sudo apt  install docker.io
+docker pull scrapinghub/splash
+docker run -p 8050:8050 scrapinghub/splash
+
+
 **useful index**
 
 scrapy shell -s USER_AGENT="Mozilla/5.0 (Windows NT 10.0; …) Gecko/20100101 Firefox/60.0"
@@ -15,9 +23,16 @@ next_page = response.urljoin(next_page)
 
 js escape编码 https://www.cnblogs.com/yoyoketang/p/8058873.html
 
+headers = {
+    'User-Agent': "Mozilla/5.0 (Windows NT 10.0; …) Gecko/20100101 Firefox/60.0",
+    'Referer': "http://service.shanghai.gov.cn/pagemore/iframePagerIndex_12344_2_22.html?objtype=&nodeid=&pagesize=&page=13"
+}
+
 **Jiangxi**
 
 total page 106
+
+"文      号:"
 
 scrapy shell -s USER_AGENT="Mozilla/5.0 (Windows NT 10.0; …) Gecko/20100101 Firefox/60.0" 'http://www.jiangxi.gov.cn/module/xxgk/subjectinfo.jsp?sortfield=compaltedate:0&fbtime=&texttype=0&vc_all=&vc_filenumber=&vc_title=&vc_number=&currpage=2&binlay=&c_issuetime='
 
@@ -47,6 +62,8 @@ response.css('div.bt-article-y div#zoom p a::attr(href)').getall()
 
 **Shanghai**
 total page 1305
+
+"mainText" [0]
 
 http://www.shanghai.gov.cn/nw2/nw2314/nw2319/nw12344/index.html
 
@@ -82,6 +99,9 @@ response.css('ul.nowrapli li a::attr(title)').getall()
 response.css('ul.nowrapli li a::attr(href)').getall()
 
 **Tianjin**
+
+'date2'文号
+'date3'发文日期
 
 http://gk.tj.gov.cn/index_47.shtml
 
@@ -124,6 +144,9 @@ response.css('div.TRS_PreAppend p *::text').getall()
 **Chongqing**
 
 不爬取市政府内部细分部门文件和已经废止和失效的文件
+
+doc_info_dict
+"文 号："
 
 content_list:
 http://www.cq.gov.cn/zwgk/fdzdgknr/lzyj/zfgz/zfgz_52609/index_11.html

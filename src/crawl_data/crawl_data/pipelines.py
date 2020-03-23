@@ -32,16 +32,16 @@ class PolicyMongoPipeline(object):
         self.db[self.mongo_col].drop()
 
     def close_spider(self, spider):
-        if not os.path.exists('../../data/excel/%s' % spider.name):
-            os.makedirs('../../data/excel/%s' % spider.name)
+        if not os.path.exists('../../data/csv/%s' % spider.name):
+            os.makedirs('../../data/csv/%s' % spider.name)
         table = self.db[self.mongo_col]
         data_list = []
         for raw_dict in table.find():
             #data_list.append({key:value for key,value in  raw_dict.items() if key in ['UID','title','date','url']})
-            data_list.append({key:raw_dict[key] for key in ['UID','title','date','url']})
+            data_list.append({key:raw_dict[key] for key in ['UID','title','date','url','FileNumber','crawl state']})
         df = pd.DataFrame(data_list)
         print(df)
-        df.to_excel('../../data/excel/%s/news_list.xls' % spider.name)
+        df.to_csv('../../data/csv/%s/news_list.csv' % spider.name,encoding='utf-8')
         self.client.close()
 
     def process_item(self, item, spider):
