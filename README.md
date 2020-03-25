@@ -352,3 +352,41 @@ len(response.css('table.xxgk_table td'))
 response.css('table.xxgk_table td')[0].css('*::text').get()
 response.css('table.xxgk_table td')[-4].css('*::text').get()
 response.css('div#zoom p *::text').getall()
+
+**Shanxi_jin**
+
+很多pdf
+
+total page 138
+
+http://www.shanxi.gov.cn/sxszfxxgk/index_100.shtml
+
+http://www.shanxi.gov.cn/sxszfxxgk/sxsrmzfzcbm/sxszfbgt/flfg_7203/szfgfxwj_7205/200808/t20080812_145981.shtml
+
+
+response.css('td.affaires-doc-title a::attr(title)').getall()
+response.css('td.affaires-doc-title a::attr(href').getall()
+response.css('td.affaires-doc-title a::attr(href)').getall()
+response.css('td.affaires-doc-sizes::text').getall()
+response.css('td.affaires-doc-published::text').getall()
+response.css('table.affairs-document-titbar').getall()
+response.css('table.affairs-document-box').getall()
+response.css('table.affairs-document-box')
+response.css('table.affairs-document-box tr')
+response.css('table.affairs-document-box tr')[1:]
+response.css('table.affairs-document-box tr')[1:][0]
+response.css('table.affairs-document-box tr')[1:][0].css('td.affaires-doc-title a::attr(href)').get()
+response.css('table.affairs-document-box tr')[1:][0].css('td.affaires-doc-title a::attr(title)').get()
+response.css('table.affairs-document-box tr')[1:][0].css('td.affaires-doc-sizes::text').get()
+response.css('table.affairs-document-box tr')[1:][0].css('td.affaires-doc-published::text').get()
+
+response.css('table.affairs-detail-head')
+response.css('table.affairs-detail-head').get()
+response.css('table.affairs-detail-head td')
+len(response.css('table.affairs-detail-head td'))
+response.css('table.affairs-detail-head td')[0].css('*::text').get()
+response.css('div[style="FONT-SIZE: 16px; LINE-HEIGHT: 160%"])
+response.css('div[style="FONT-SIZE: 16px; LINE-HEIGHT: 160%"]')
+response.css('div[style="FONT-SIZE: 16px; LINE-HEIGHT: 160%"] *::text').getall()
+
+**Shanxi_shan**

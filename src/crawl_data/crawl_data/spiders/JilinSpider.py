@@ -36,6 +36,7 @@ class JilinSpider(scrapy.Spider):
 
     def parse_content(self, response):
         UID = response.url.split('_')[-1][:-5]
+        state = 'full' if response.status == 200 else 'false'
         with open('../../data/HTML_pk/%s/%s.pkl' % (self.name,UID), 'wb') as f:
             pickle.dump(response.text,f)
         paragraph_list = response.css('div.zlyxwz_t2a p *::text').getall()
