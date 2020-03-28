@@ -12,8 +12,8 @@ class ZhejiangSpider(scrapy.Spider):
     if not os.path.exists('../../data/text/%s' % name):
         os.makedirs('../../data/text/%s' % name)
     def start_requests(self):
-        # total_page = 509
-        total_page = 3 
+        total_page = 509
+        # total_page = 3 
         url_base = 'http://www.zj.gov.cn/module/xxgk/search.jsp?infotypeId=&jdid=3096&area=000014349&divid=div1551294&vc_title=&vc_number=&sortfield=,compaltedate:0&currpage={0}&vc_filenumber=&vc_all=&texttype=0&fbtime=&texttype=0&fbtime=&vc_all=&vc_filenumber=&vc_title=&vc_number=&currpage=3&sortfield=,compaltedate:0'
         for i in range(total_page):
             yield scrapy.Request(url=url_base.format(i+1), callback=self.parse)
