@@ -14,10 +14,16 @@ class NingxiaSpider(scrapy.Spider):
     def start_requests(self):
         total_page = 48 
         # total_page = 3 
+        headers = {
+            'User-Agent': "Mozilla/5.0 (Windows NT 10.0; …) Gecko/20100101 Firefox/60.0",
+            'Referer': "http://www.nx.gov.cn/zwgk/qzfwj/",
+            "Host": "www.nx.gov.cn",
+            "Origin":"http://www.nx.gov.cn"
+        }
         url_base = 'http://www.nx.gov.cn/zwgk/qzfwj/list{0}.html'
         for i in range(total_page):
             page = '_'+ str(i) if i > 0 else ''
-            yield scrapy.Request(url=url_base.format(page), callback=self.parse)
+            yield scrapy.Request(url=url_base.format(page),headers=headers, callback=self.parse)
 
     def parse(self,response):
         detail_page_links = []
